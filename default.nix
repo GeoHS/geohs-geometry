@@ -6,6 +6,7 @@ mkDerivation {
   pname = "geohs-geometry";
   version = "0.1.0.0";
   src = ./.;
+  hyperlinkSource = false;
   libraryHaskellDepends = [
     aeson base bytestring http-api-data insert-ordered-containers lens
     spatial-reference swagger2 text
