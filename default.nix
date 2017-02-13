@@ -1,6 +1,6 @@
 { mkDerivation, aeson, base, bytestring, http-api-data
 , insert-ordered-containers, lens, spatial-reference, stdenv
-, swagger2, text
+, swagger2, text, template-haskell, tagged
 }:
 mkDerivation {
   pname = "geohs-geometry";
@@ -9,7 +9,7 @@ mkDerivation {
   hyperlinkSource = false;
   libraryHaskellDepends = [
     aeson base bytestring http-api-data insert-ordered-containers lens
-    spatial-reference swagger2 text
+    spatial-reference swagger2 text template-haskell tagged
   ];
   homepage = "https://github.com/GeoHS/geohs-geometry";
   description = "GeoHS Geometry types";
