@@ -19,19 +19,18 @@ cabal-version:       >=1.10
 library
   exposed-modules:
       GeoHS.Geometry
+      GeoHS.Geometry.TH
   other-modules:
       GeoHS.Geometry.Types
       GeoHS.Geometry.Lens
       GeoHS.Geometry.Transform
-      GeoHS.Geometry.TH
   build-depends:
       base >=4.9 && <4.10
-    , aeson >=0.11 && <0.12
+    , aeson >=0.11 && <1.2
     , text >=1.2 && <1.3
     , bytestring >=0.10 && <0.11
     , swagger2 >=2.1 && <2.2
-    , insert-ordered-containers >=0.1 && <0.2
-    , lens >=4.14 && <4.15
+    , lens >=4.14 && <4.16
     , spatial-reference >=0.1 && <0.2
     , http-api-data >=0.3 && <0.4
     , template-haskell

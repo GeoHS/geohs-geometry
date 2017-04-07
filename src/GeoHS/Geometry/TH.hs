@@ -1,9 +1,14 @@
 {-# LANGUAGE ViewPatterns #-}
-module GeoHS.Geometry.TH ( sameNameFields, sameNameNamer) where
+module GeoHS.Geometry.TH (
+  sameNameNamer
+, makeSameNameFields
+) where
 
 import Control.Lens
 import Data.Char (toUpper)
 import Language.Haskell.TH
+
+makeSameNameFields = makeLensesWith sameNameFields
 
 sameNameFields :: LensRules
 sameNameFields = defaultFieldRules

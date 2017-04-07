@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
@@ -17,8 +18,8 @@ import GeoHS.Geometry.TH
 import Control.Lens
 import Data.Tagged
 
-makeLensesWith sameNameFields ''LatLng
-makeLensesWith sameNameFields ''Bounds
+makeSameNameFields ''Point
+makeSameNameFields ''Bounds
 
 class HasNorthWest o a | o -> a where northWest :: Lens' o a
 class HasSouthEast o a | o -> a where southEast :: Lens' o a
@@ -112,3 +113,9 @@ taggedLens lns = lens (view lns . unTagged) (flip (fmap . set lns))
 taggedLens' :: Lens' a b -> Lens' (Tagged c a) (Tagged c b)
 taggedLens' lns = lens (Tagged . view lns . unTagged) (flip (fmap . set lns . unTagged))
 {-# INLINE taggedLens' #-}
+
+type ToBounds a = (HasNorth a Double, HasSouth a Double, HasWest a Double, HasEast a Double)
+
+toBounds :: ToBounds a => a -> Bounds
+toBounds bb = Bounds (bb^.west) (bb^.south) (bb^.east) (bb^.north)
+{-# INLINE toBounds #-}

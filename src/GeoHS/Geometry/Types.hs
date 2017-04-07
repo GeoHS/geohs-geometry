@@ -8,8 +8,10 @@
 {-# LANGUAGE PatternSynonyms #-}
 
 module GeoHS.Geometry.Types (
-  LatLng(LatLng)
+  Point(Point)
+, LatLng
 , pattern LngLat
+, pattern LatLng
 , Bounds(Bounds)
 , latLng
 , lngLat
@@ -29,12 +31,20 @@ import Data.Swagger
 import Web.HttpApiData (FromHttpApiData(..))
 
 
+type LatLng = Point
+
 -- | Geographic coordinates
-data LatLng = LatLng { lat:: !Double, lng:: !Double}
+data Point = Point
+  { lng :: {-# UNPACK #-} !Double
+  , lat :: {-# UNPACK #-} !Double
+  }
   deriving (Show, Ord, Eq, Generic, ToJSON, FromJSON, ToSchema)
 
 pattern LngLat :: Double -> Double -> LatLng
-pattern LngLat lng lat = LatLng lat lng
+pattern LngLat lng lat = Point lng lat
+
+pattern LatLng :: Double -> Double -> LatLng
+pattern LatLng lat lng = Point lng lat
 
 
 latLng, lngLat :: Double -> Double -> LatLng
@@ -45,11 +55,12 @@ latLng = LatLng
 lngLat = LngLat
 {-# INLINE lngLat #-}
 
+-- | A Bounding box in the usual Xmin,Ymin,Xmax,Ymax coordinate order
 data Bounds = Bounds
-  { west  :: !Double
-  , south :: !Double
-  , east  :: !Double
-  , north :: !Double
+  { west  :: {-# UNPACK #-} !Double
+  , south :: {-# UNPACK #-} !Double
+  , east  :: {-# UNPACK #-} !Double
+  , north :: {-# UNPACK #-} !Double
   } deriving (Show, Eq, Generic, ToJSON, FromJSON, ToSchema)
 
 emptyBounds :: Bounds
