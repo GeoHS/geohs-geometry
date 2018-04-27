@@ -9,6 +9,10 @@ module GeoHS.Geometry.Transform (
 , SphericalMercator
 , wgs84
 , sphericalMercator
+, earthRadius
+, degreeToMeterResolution
+, mercatorToWGS84
+, wgs84ToMercator
 ) where
 
 import SpatialReference
@@ -33,17 +37,34 @@ class HasTransform a crsFrom crsTo where
 
 
 instance HasTransform LatLng WGS84 SphericalMercator where
-  transform (Tagged cs) = Tagged (lngLat lng1 lat1)
-    where
-      lng1 = cs^.lng * originShift / 180
-      lat1 = (log (tan((90 + cs^.lat) * pi / 360 )) / (pi / 180)) * originShift / 180
+  transform (Tagged cs) = Tagged (wgs84ToMercator cs)
+
+wgs84ToMercator :: LatLng -> LatLng
+wgs84ToMercator cs = lngLat lng1 lat1
+  where
+    lng1 = cs^.lng * originShift / 180
+    lat1 = (log (tan((90 + cs^.lat) * pi / 360 )) / (pi / 180)) * originShift / 180
 
 instance HasTransform LatLng SphericalMercator WGS84 where
-  transform (Tagged cs) = Tagged (lngLat lng1 lat1)
-    where
-      lng1  = (cs^.lng / originShift) * 180
-      lat1' = (cs^.lat / originShift) * 180
-      lat1  = 180 / pi * (2 * atan ( exp ( lat1' * pi / 180) ) - pi / 2)
+  transform (Tagged cs) = Tagged (mercatorToWGS84 cs)
 
-originShift :: Double
-originShift = 2 * pi * 6378137 / 2
+mercatorToWGS84 :: LatLng -> LatLng
+mercatorToWGS84 cs = lngLat lng1 lat1
+  where
+    lng1  = (cs^.lng / originShift) * 180
+    lat1' = (cs^.lat / originShift) * 180
+    lat1  = 180 / pi * (2 * atan ( exp ( lat1' * pi / 180) ) - pi / 2)
+
+originShift :: Floating a => a
+originShift = pi * earthRadius
+
+earthRadius :: Num a => a
+earthRadius = 6378137
+
+
+degreeToMeterResolution
+  :: Floating a
+  => a -> a -> a
+degreeToMeterResolution latitude res
+  = res * earthRadius * (pi/180) * cos (latitude * pi / 180)
+{-# INLINE degreeToMeterResolution #-}
